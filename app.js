@@ -22,7 +22,7 @@ let app = express()
 app.use(bodyParser.urlencoded({ extended: false, keepExtensions: true }))
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(cors())
-app.use('/files', express.static(userFiles));
+app.use('/files', express.static(userFiles))
 
 // Allow access to static files in Public folder
 app.use(express.static('public'))
@@ -41,5 +41,5 @@ let appEnv = cfenv.getAppEnv();
 // start server on the specified port and binding host
 app.listen(appEnv.port, '0.0.0.0', () => {
     // print a message when the server starts listening
-    console.log("server starting on " + appEnv.url);
+    console.log("server starting on " + appEnv.url)
 })

@@ -6,10 +6,224 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>C3 Blockchain</title>
+
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <h1>My C3 Blockchain</h1>
+
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">C3 Multi-System Blockchain</a>
+    </nav>
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="form-inline">
+            <!-- <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
+            <button onclick="fetchTable(DATA_ACCOUNTS)" class="btn btn-outline-success my-2 my-sm-0 mr-2">Accounts</button>
+            <button onclick="fetchTable(DATA_TRANSACTIONS)" class="btn btn-outline-success my-2 my-sm-0 mr-2">Transactions</button>
+            <button onclick="fetchTable(DATA_CONTRACTS)" class="btn btn-outline-success my-2 my-sm-0 mr-2">Contracts</button>
+            <button onclick="fetchTable(DATA_BLOCKS)" class="btn btn-outline-success my-2 my-sm-0 mr-2">Blocks</button>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card w-100">
+                    <div class="card-header">
+                        <strong>Accounts</strong>
+                    </div>
+                    <div class="card-body text-center">
+                        <h1 id="count-accounts">0</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card w-100">
+                    <div class="card-header">
+                        <strong>Transactions</strong>
+                    </div>
+                    <div class="card-body text-center">
+                        <h1 id="count-transactions">0</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card w-100">
+                    <div class="card-header">
+                        <strong>Contracts</strong>
+                    </div>
+                    <div class="card-body text-center">
+                        <h1 id="count-contracts">0</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card w-100">
+                    <div class="card-header">
+                        <strong>Blocks</strong>
+                    </div>
+                    <div class="card-body text-center">
+                        <h1 id="count-blocks">0</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2 p-3">
+            <div class="table-responsive">
+                <legend id="table-legend">Accounts</legend>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr id="data-head">
+                            <th scope="col">Address</th>
+                            <th scope="col">Transactions</th>
+                            <th scope="col">Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Accounts</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Transactions</th>
+                                        <th scope="col">Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="body-accounts">
+                                    <tr>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>@mdo</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Transactions</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">From</th>
+                                        <th scope="col">Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>
+                                            <span class="badge badge-warning">Contract Creation</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-body ">
+                        <h5 class="card-title">Contracts</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>
+                                            <a href="http://">
+                                                <i class="fa fa-file-o" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Blocks</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nonce</th>
+                                        <th scope="col">Prev Hash</th>
+                                        <th scope="col">Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>@mdo</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div> -->
+
+
+    </div>
+
+
+
+
+
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="bootstrap.min.js" type="text/javascript"></script>
+    <script src="app.js" type="text/javascript"></script>
 </body>
 
 </html>
