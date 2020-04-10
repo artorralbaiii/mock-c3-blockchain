@@ -17,6 +17,7 @@ mongoose.connect('mongodb+srv://admin:passw0rd@cluster0-vzlo8.mongodb.net/c3-moc
 
 // express server
 let app = express()
+const server = require('http').createServer(app);
 
 // Parse incoming request as JSON.
 app.use(bodyParser.urlencoded({ extended: false, keepExtensions: true }))
@@ -38,8 +39,15 @@ app.get('*', function (req, res) {
 // get the app environment from Cloud Foundry
 let appEnv = cfenv.getAppEnv();
 
+
+const io = require('socket.io')(server);
+io.on('connection', () => {
+    console.log('SOCKET SERVER: Client is connected')
+});
+// server.listen(3000);
+
 // start server on the specified port and binding host
-app.listen(appEnv.port, '0.0.0.0', () => {
+server.listen(appEnv.port, '0.0.0.0', () => {
     // print a message when the server starts listening
     console.log("server starting on " + appEnv.url)
 })

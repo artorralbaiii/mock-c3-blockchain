@@ -1,0 +1,17 @@
+{
+    "incident": {
+        "images": [],
+        "otherParty": []
+    },
+    "policy": {
+        "linkPolicy": [],
+        "policyNumber": "998-404-051",
+        "plateNo": "ABC 4444",
+        "issueDate": "Oct 20, 2019",
+        "termFrom": "Oct 20, 2019",
+        "termTo": "Oct 20, 2020",
+        "itemInsured": "Mitsubihsi Xpander"
+    },
+    "owner": "c5218ca983e8ea852b576c2c9498f779bf9eb2f0dbaa314292b11b3c98903976",
+    "name": "policy"
+}

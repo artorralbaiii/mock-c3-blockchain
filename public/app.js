@@ -3,10 +3,10 @@ const DATA_BLOCKS = 'BLOCKS'
 const DATA_CONTRACTS = 'CONTRACTS'
 const DATA_TRANSACTIONS = 'TRANSACTIONS'
 
-const HEADER_ACCOUNTS = `<th scope="col">Address</th><th scope="col">Transactions</th><th scope="col">Timestamp</th>`
-const HEADER_BLOCKS = `<th scope="col">Nonce</th><th scope="col">Prev Hash</th><th scope="col">Timestamp</th>`
-const HEADER_CONTRACTS = `<th scope="col">Address</th><th scope="col">Name</th><th scope="col">Data</th>`
-const HEADER_TRANSACTIONS = `<th scope="col">Address</th><th scope="col">From</th><th scope="col">Type</th>`
+const HEADER_ACCOUNTS = `</th><th scope="col">Timestamp</th><th scope="col">Address</th><th scope="col">Transactions`
+const HEADER_BLOCKS = `<th scope="col">Timestamp</th><th scope="col">Nonce</th><th scope="col">Prev Hash</th>`
+const HEADER_CONTRACTS = `<th scope="col">Timestamp</th><th scope="col">Address</th><th scope="col">Name</th><th scope="col">Data</th>`
+const HEADER_TRANSACTIONS = `<th scope="col">Timestamp</th><th scope="col">Address</th><th scope="col">From</th><th scope="col">Type</th>`
 
 const DEFAULT_LEGEND = 'Accounts'
 
@@ -71,15 +71,16 @@ let populateRows = (type, data) => {
     if (type === DATA_BLOCKS) {
         data.forEach(element => {
             rows += '<tr>'
+            rows += '<td>' + element.updatedAt + '</td>'
             rows += '<td>' + element.nonce + '</td>'
             rows += '<td>' + element.previousHash + '</td>'
-            rows += '<td>' + element.updatedAt + '</td>'
             rows += '</tr>'
 
         })
     } else if (type === DATA_CONTRACTS) {
         data.forEach(element => {
             rows += '<tr>'
+            rows += '<td>' + element.updatedAt + '</td>'
             rows += '<td>' + element.address + '</td>'
             rows += '<td>' + element.name + '</td>'
             rows += '<td><a href="http://"><i class="fa fa-file-o" aria-hidden="true"></i></a></td>'
@@ -89,6 +90,7 @@ let populateRows = (type, data) => {
     } else if (type === DATA_TRANSACTIONS) {
         data.forEach(element => {
             rows += '<tr>'
+            rows += '<td>' + element.updatedAt + '</td>'
             rows += '<td>' + element.address + '</td>'
             rows += '<td>' + element.from + '</td>'
             rows += '<td>' + '<span class="badge badge-warning">' + element.type + '</span></td>'
@@ -98,9 +100,9 @@ let populateRows = (type, data) => {
     } else {
         data.forEach(element => {
             rows += '<tr>'
+            rows += '<td>' + element.updatedAt + '</td>'
             rows += '<td>' + element.address + '</td>'
             rows += '<td>' + element.transCount + '</td>'
-            rows += '<td>' + element.updatedAt + '</td>'
             rows += '</tr>'
 
         })

@@ -1,0 +1,17 @@
+{
+    "incident": {
+        "images": [],
+        "otherParty": []
+    },
+    "policy": {
+        "linkPolicy": [],
+        "policyNumber": "MC-PVC-0000001",
+        "plateNo": "MX3399",
+        "issueDate": "Oct 20, 2019",
+        "termFrom": "Oct 20, 2019",
+        "termTo": "Oct 20, 2020",
+        "itemInsured": "2020 Hyundai Kona AT"
+    },
+    "owner": "6b839da01aa31600db5fea180e63b9b82c73ecdff39de8f33430a718dd2abbd4",
+    "name": "policy"
+}

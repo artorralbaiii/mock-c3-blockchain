@@ -5,7 +5,6 @@ var schema = mongoose.Schema;
 
 var blockSchema = new schema({
     previousHash: { type: String },
-    timeStamp: { type: String },
     nonce: { type: String }
 }, { timestamps: true });
 
