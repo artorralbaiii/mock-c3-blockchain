@@ -17,6 +17,7 @@ module.exports = () => {
         getAccounts: getAccounts,
         getBlocks: getBlocks,
         getContracts: getContracts,
+        getContractByAddress: getContractByAddress,
         getCounts: getCounts,
         getTransactions: getTransactions,
         ping: ping,
@@ -41,6 +42,21 @@ module.exports = () => {
     function getTransactions(req, res) {
         fetchData(Transaction, res)
     }
+
+    function getContractByAddress(req, res) {
+        Contract.findOne({ address: req.params.address }, (err, data) => {
+            if (err) {
+                res.json(returnError(JSON.stringify(err)))
+            } else {
+                res.json({
+                    message: 'Successful Fetch',
+                    success: true,
+                    data: data
+                })
+            }
+        })
+    }
+
     async function getCounts(req, res) {
 
         try {

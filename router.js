@@ -10,6 +10,7 @@ module.exports = (app, express) => {
     //  GET
     api.get('/accounts', database.getAccounts)
     api.get('/blocks', database.getBlocks)
+    api.get('/contracts/:address', database.getContractByAddress)
     api.get('/contracts', database.getContracts)
     api.get('/transactions', database.getTransactions)
     api.get('/counts', database.getCounts)
