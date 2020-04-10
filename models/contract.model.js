@@ -28,6 +28,8 @@ let contractSchema = new schema({
         termFrom: { type: String },
         termTo: { type: String },
         itemInsured: { type: String },
+        status: { type: String, default: 'Active' },
+        effectivityDate: { type: Date },
         linkPolicy: [{
             linkPolicy: { type: String },
             linkAddress: { type: String },

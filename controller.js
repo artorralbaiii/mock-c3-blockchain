@@ -12,6 +12,7 @@ let mongoose = require('mongoose')
 module.exports = () => {
 
     let ctrl = {
+        approveLink: approveLink,
         createContract: createContract,
         getAccounts: getAccounts,
         getBlocks: getBlocks,
@@ -78,7 +79,6 @@ module.exports = () => {
         })
     }
 
-
     function createContract(req, res) {
         let contract = new Contract(req.body)
         // let contract = new Contract(req.body)
@@ -96,47 +96,131 @@ module.exports = () => {
         })
     }
 
-
     async function requestLink(req, res) {
         let body = req.body
         let otherAddress
         let otherPolicy = body.otherPolicy
+        let otherContract
+        let now = new Date()
 
         if (body.otherAddress) {
             otherAddress = body.otherAddress
+
+            try {
+                otherContract = await Contract.findOne({ address: otherAddress, 'policy.effectivityDate': { $gte: new Date() } })
+            } catch (error) {
+                res.json(returnError(JSON.stringify(error)))
+                return;
+            }
+
         } else {
-            let otherContract = await Contract.findOne({ 'policy.policyNumber': otherPolicy })
-            otherAddress = otherContract.address
+
+            try {
+                otherContract = await Contract.findOne({ 'policy.policyNumber': otherPolicy, 'policy.effectivityDate': { $gte: new Date() } })
+            } catch (error) {
+                res.json(returnError(JSON.stringify(error)))
+                return;
+            }
+
         }
 
+        // , effectivityDate: { $gte: new Date("2013-10-01T00:00:00.000Z") }
+
+        if (!otherContract) {
+            res.json({
+                message: 'The policy is either In-active or not exists. Please check with the insurance provider.',
+                success: false,
+                data: null
+            })
+
+            return;
+        }
+
+        otherAddress = otherContract.address
+
         Contract.findOne({ address: body.address }, (err, data) => {
+            let addressExist = false
+
             if (err) {
                 res.json(returnError(JSON.stringify(err)))
             } else {
 
-                data.policy.linkPolicy.push({
-                    linkPolicy: otherPolicy,
-                    linkAddress: otherAddress
-                })
-
-                data.save((err, result) => {
-                    if (err) {
-                        res.json(returnError(JSON.stringify(err)))
-                    } else {
-                        res.json({
-                            message: 'Successful Save',
-                            success: true,
-                            data: result
-                        })
+                for (i = 0; i <= data.policy.linkPolicy.length; i++) {
+                    if (data.policy.linkPolicy[i].linkAddress === otherAddress) {
+                        addressExist = true
+                        break
                     }
-                })
+                }
+
+                if (addressExist) {
+                    res.json({
+                        message: 'Link record already exists.',
+                        success: false,
+                        data: null
+                    })
+                } else {
+                    data.policy.linkPolicy.push({
+                        linkPolicy: otherPolicy,
+                        linkAddress: otherAddress
+                    })
+
+                    data.save((err, result) => {
+                        if (err) {
+                            res.json(returnError(JSON.stringify(err)))
+                        } else {
+                            res.json({
+                                message: 'Successful Save',
+                                success: true,
+                                data: result
+                            })
+                        }
+                    })
+                }
+
 
             }
         })
-
-
-
     }
+
+    function approveLink(req, res) {
+        let address = req.body.linkAddress
+        let myAddress = req.body.myAddress
+
+        Contract.findOne({ address: address }, (err, data) => {
+            if (err) {
+                res.json(returnError(JSON.stringify(err)))
+            } else {
+
+                let linkExist = false;
+
+                for (let index = 0; index < data.policy.linkPolicy.length; index++) {
+                    if (data.policy.linkPolicy[index].linkAddress === myAddress) {
+                        data.policy.linkPolicy[index].statusCode = 1
+                        data.policy.linkPolicy[index].status = 'Permitted'
+                        linkExist = true
+                        break
+                    }
+                }
+
+                if (linkExist) {
+                    data.save()
+                    res.json({
+                        message: 'Link successfuly approved.',
+                        success: true,
+                        data: data
+                    })
+                } else {
+                    res.json({
+                        message: 'Link record not found.',
+                        success: false,
+                        data: null
+                    })
+                }
+
+            }
+        })
+    }
+
 
 
 }

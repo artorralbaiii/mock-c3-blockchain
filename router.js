@@ -15,6 +15,7 @@ module.exports = (app, express) => {
     api.get('/counts', database.getCounts)
 
     // POST
+    api.post('/approve_link', database.approveLink)
     api.post('/contracts', database.createContract)
     api.post('/request_link', database.requestLink)
 
