@@ -21,7 +21,8 @@ module.exports = () => {
         getCounts: getCounts,
         getTransactions: getTransactions,
         ping: ping,
-        requestLink: requestLink
+        requestLink: requestLink,
+        verifyStatus: verifyStatus
     }
 
     return ctrl
@@ -118,6 +119,7 @@ module.exports = () => {
         let otherPolicy = body.otherPolicy
         let otherContract
         let now = new Date()
+        let initiatorAddress = body.address
 
         if (body.otherAddress) {
             otherAddress = body.otherAddress
@@ -154,7 +156,7 @@ module.exports = () => {
 
         otherAddress = otherContract.address
 
-        Contract.findOne({ address: body.address }, (err, data) => {
+        Contract.findOne({ address: otherAddress }, (err, data) => {
             let addressExist = false
 
             if (err) {
@@ -162,7 +164,7 @@ module.exports = () => {
             } else {
 
                 for (i = 0; i <= data.policy.linkPolicy.length; i++) {
-                    if (data.policy.linkPolicy[i].linkAddress === otherAddress) {
+                    if (data.policy.linkPolicy[i].linkAddress === initiatorAddress) {
                         addressExist = true
                         break
                     }
@@ -235,6 +237,43 @@ module.exports = () => {
 
             }
         })
+    }
+
+
+    function verifyStatus(req, res) {
+        let address = req.body.address
+        let policy = req.body.policy
+        let searchOption = {}
+
+        if (address) {
+            searchOption = { address: address, 'policy.effectivityDate': { $gte: new Date() } }
+        } else {
+            searchOption = { 'policy.policyNumber': policy, 'policy.effectivityDate': { $gte: new Date() } }
+        }
+
+        Contract.findOne(searchOption).
+            select('address policy').exec((err, data) => {
+                if (err) {
+                    res.json(returnError(JSON.stringify(err)))
+                } else {
+
+                    if (data) {
+                        res.json({
+                            message: 'Verified',
+                            success: true,
+                            data: data
+                        })
+                    } else {
+                        res.json({
+                            message: 'The policy is either expired or doesn\'t exists. Please check with the policy owner or provider.',
+                            success: true,
+                            data: data
+                        })
+                    }
+
+                }
+            })
+
     }
 
 

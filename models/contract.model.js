@@ -35,7 +35,8 @@ let contractSchema = new schema({
             linkPolicy: { type: String },
             linkAddress: { type: String },
             statusCode: { type: Number, default: 0 },
-            status: { type: String, default: 'Awaiting Permission' }
+            status: { type: String, default: 'Awaiting Permission' },
+            created: {type: Date, default: Date.now}
         }],
     }
 }, { timestamps: true }, { usePushEach: true })
