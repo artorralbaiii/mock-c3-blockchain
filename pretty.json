@@ -4,3 +4,18 @@
 
 
 
+{
+    "_id": "5e7f7164592a521b40767c76",
+    "username": "user2",
+    "password": "password",
+    "firstName": "Carey",
+    "lastName": "Carter",
+    "middleName": "Jones",
+    "dob": "November 27, 1934",
+    "mobile": "405-947-4985",
+    "landLine": "405-947-4985",
+    "email": "cc@domain.com",
+    "license": "D01-12-000002",
+    "policies": ["5e7f7307592a521b40767c77"],
+    "role": "POLICY_HOLDER"
+}

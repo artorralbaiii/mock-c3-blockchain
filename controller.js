@@ -117,9 +117,11 @@ module.exports = () => {
         let body = req.body
         let otherAddress
         let otherPolicy = body.otherPolicy
+        let policyRequestor = body.policyRequestor
+        let addressRequestor = body.addressRequestor
         let otherContract
         let now = new Date()
-        let initiatorAddress = body.address
+        // let initiatorAddress = body.address
 
         if (body.otherAddress) {
             otherAddress = body.otherAddress
@@ -163,8 +165,8 @@ module.exports = () => {
                 res.json(returnError(JSON.stringify(err)))
             } else {
 
-                for (i = 0; i <= data.policy.linkPolicy.length; i++) {
-                    if (data.policy.linkPolicy[i].linkAddress === initiatorAddress) {
+                for (i = 0; i < data.policy.linkPolicy.length; i++) {
+                    if (data.policy.linkPolicy[i].linkAddress === otherAddress) {
                         addressExist = true
                         break
                     }
@@ -179,7 +181,9 @@ module.exports = () => {
                 } else {
                     data.policy.linkPolicy.push({
                         linkPolicy: otherPolicy,
-                        linkAddress: otherAddress
+                        linkPolicyRequestor: policyRequestor,
+                        linkAddress: otherAddress,
+                        linkAddressRequestor: addressRequestor
                     })
 
                     data.save((err, result) => {
@@ -187,7 +191,7 @@ module.exports = () => {
                             res.json(returnError(JSON.stringify(err)))
                         } else {
                             res.json({
-                                message: 'Successful Save',
+                                message: 'Link request has been sent.',
                                 success: true,
                                 data: result
                             })
@@ -201,10 +205,12 @@ module.exports = () => {
     }
 
     function approveLink(req, res) {
-        let address = req.body.linkAddress
         let myAddress = req.body.myAddress
+        // let linkId = mongoose.Types.ObjectId(req.body.linkId)
+        let linkId = req.body.linkId
+        let returnData = {}
 
-        Contract.findOne({ address: address }, (err, data) => {
+        Contract.findOne({ address: myAddress }, (err, data) => {
             if (err) {
                 res.json(returnError(JSON.stringify(err)))
             } else {
@@ -212,10 +218,11 @@ module.exports = () => {
                 let linkExist = false;
 
                 for (let index = 0; index < data.policy.linkPolicy.length; index++) {
-                    if (data.policy.linkPolicy[index].linkAddress === myAddress) {
+                    if (data.policy.linkPolicy[index]._id.toString() == linkId) {
                         data.policy.linkPolicy[index].statusCode = 1
                         data.policy.linkPolicy[index].status = 'Permitted'
                         linkExist = true
+                        returnData = data.policy.linkPolicy[index]
                         break
                     }
                 }
@@ -225,7 +232,7 @@ module.exports = () => {
                     res.json({
                         message: 'Link successfuly approved.',
                         success: true,
-                        data: data
+                        data: returnData
                     })
                 } else {
                     res.json({

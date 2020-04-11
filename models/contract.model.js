@@ -32,6 +32,8 @@ let contractSchema = new schema({
         status: { type: String, default: 'Active' },
         effectivityDate: { type: Date },
         linkPolicy: [{
+            linkPolicyRequestor: {type: String},
+            linkAddressRequestor: { type: String },
             linkPolicy: { type: String },
             linkAddress: { type: String },
             statusCode: { type: Number, default: 0 },

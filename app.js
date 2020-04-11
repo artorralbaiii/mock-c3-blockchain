@@ -47,7 +47,8 @@ let appEnv = cfenv.getAppEnv();
 // server.listen(3000);
 
 // start server on the specified port and binding host
-app.listen(appEnv.port, '0.0.0.0', () => {
+// app.listen(appEnv.port, '0.0.0.0', () => {
+app.listen(6004, '0.0.0.0', () => {
     // print a message when the server starts listening
     console.log("server starting on " + appEnv.url)
 })
