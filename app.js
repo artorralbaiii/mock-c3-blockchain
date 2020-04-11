@@ -1,6 +1,6 @@
 'use strict'
 
-const userFiles = './user_upload/';
+const userFiles = 'user_upload';
 
 // Vendor
 let bodyParser = require('body-parser')
@@ -23,9 +23,10 @@ let app = express()
 app.use(bodyParser.urlencoded({ extended: false, keepExtensions: true }))
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(cors())
-app.use('/files', express.static(userFiles))
 
 // Allow access to static files in Public folder
+app.use('/files', express.static(userFiles))
+// app.use(express.static('user_upload'))
 app.use(express.static('public'))
 
 // API Router

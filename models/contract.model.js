@@ -7,6 +7,12 @@ const Account = require('./account.model')
 const Block = require('./block.model')
 const Transaction = require('./transaction.model')
 
+const userFiles = 'user_upload/'
+const fs = require('fs')
+const { promisify } = require('util')
+const writeFile = promisify(fs.writeFile);
+const hostLink = 'http://localhost:6004/'
+
 
 let contractSchema = new schema({
     name: { type: String },
@@ -108,16 +114,49 @@ contractSchema.pre('save', function (next) {
         data.save()
     })
     // END - Update Account Transaction Count
+    let rootPath = __dirname.replace('models', '')
+    let filePath = rootPath + userFiles + contract.address + '/'
+
+    checkDirectorySync(filePath)
+
+    // // __dirname + 
+    // if (!fs.existsSync(filePath)) {
+    //     fs.mkdirSync(filePath);
+    // }
 
     if (contract.name == 'Incident') {
         for (let index = 0; index < contract.incident.images.length; index++) {
+
+            let base64data = contract.incident.images[index].bytes.replace(/^data:.*,/, '')
+
+            writeFile(filePath + contract.incident.images[index].name, base64data, 'base64')
             contract.incident.images[index].bytes = '';
-            contract.incident.images[index].link = 'link_added';
+            contract.incident.images[index].link = hostLink + 'files/' + contract.address + '/' + contract.incident.images[index].name;
         }
         for (let index = 0; index < contract.incident.documents.length; index++) {
-            contract.incident.documents[index].bytes = '';
-            contract.incident.documents[index].link = 'link_added';
+            let base64data = contract.incident.documents[index].bytes.replace(/^data:.*,/, '')
+
+            writeFile(filePath + contract.incident.documents[index].name, base64data, 'base64')
+            contract.incident.documents[index].bytes = ''
+            contract.incident.documents[index].link = hostLink + 'files/' + contract.address + '/' + contract.incident.documents[index].name
         }
+
+
+        // for (let i = 0; i < imagesBody.length; i++) {
+        //     let base64data = imagesBody[i].replace(/^data:.*,/, '')
+        //     let fname = incidentModel._id + '_' + i + '.png'
+
+        //     try {
+        //         await writeFile(userFiles + fname, base64data, 'base64')
+        //         imagesArray.push(fname)
+        //     } catch (error) {
+        //         console.log(error)
+        //     }
+
+        // }
+
+
+
     }
 
     next()
@@ -127,3 +166,11 @@ contractSchema.pre('save', function (next) {
 module.exports = mongoose.model('Contract', contractSchema)
 
 // problemRequests: [{type: schema.Types.ObjectId, ref: 'ProblemRequest'}],
+
+function checkDirectorySync(directory) {
+    try {
+        fs.statSync(directory);
+    } catch (e) {
+        fs.mkdirSync(directory);
+    }
+}
