@@ -16,8 +16,8 @@ module.exports = (app, express) => {
     api.get('/counts', database.getCounts)
 
     // POST
-    api.post('/contracts/approve_link', database.approveLink) // @payload:  myAddress and linkId
     api.post('/contracts', database.createContract) // @payload: {Contract Object to create. Refer to Schema}
+    api.post('/contracts/approve_link', database.approveLink) // @payload:  myAddress and linkId
     api.post('/contracts/request_link', database.requestLink) // @payload: otherPolicy, otherAddress, address
     api.post('/contracts/verify_status', database.verifyStatus) // @payload: address or policy
 

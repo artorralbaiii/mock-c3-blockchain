@@ -17,11 +17,13 @@ let contractSchema = new schema({
         dateOfAccident: { type: Number },
         timeOfAccident: { type: Number },
         location: { type: String },
-        images: [{ type: String, select: false }],
-        descriptionOfLoss: { type: String },
-        otherParty: [{ type: schema.Types.ObjectId, ref: 'Other' }]
+        images: [{ type: Object }],
+        documents: [{ type: Object }],
+        descriptionOfLoss: [{ type: Object }],
+        involvedParties: [{ type: String }]
     },
     policy: {
+        ownerName: { type: String },
         policyNumber: { type: String },
         plateNo: { type: String },
         issueDate: { type: String },
@@ -32,13 +34,13 @@ let contractSchema = new schema({
         status: { type: String, default: 'Active' },
         effectivityDate: { type: Date },
         linkPolicy: [{
-            linkPolicyRequestor: {type: String},
+            linkPolicyRequestor: { type: String },
             linkAddressRequestor: { type: String },
             linkPolicy: { type: String },
             linkAddress: { type: String },
             statusCode: { type: Number, default: 0 },
             status: { type: String, default: 'Awaiting Permission' },
-            created: {type: Date, default: Date.now}
+            created: { type: Date, default: Date.now }
         }],
     }
 }, { timestamps: true }, { usePushEach: true })
@@ -106,6 +108,17 @@ contractSchema.pre('save', function (next) {
         data.save()
     })
     // END - Update Account Transaction Count
+
+    if (contract.name == 'Incident') {
+        for (let index = 0; index < contract.incident.images.length; index++) {
+            contract.incident.images[index].bytes = '';
+            contract.incident.images[index].link = 'link_added';
+        }
+        for (let index = 0; index < contract.incident.documents.length; index++) {
+            contract.incident.documents[index].bytes = '';
+            contract.incident.documents[index].link = 'link_added';
+        }
+    }
 
     next()
 
