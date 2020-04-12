@@ -19,6 +19,9 @@ module.exports = () => {
         getContracts: getContracts,
         getContractByAddress: getContractByAddress,
         getCounts: getCounts,
+        getIncidentsByParty: getIncidentsByParty,
+        getIncident: getIncident,
+        getLinkPolicy: getLinkPolicy,
         getTransactions: getTransactions,
         ping: ping,
         requestLink: requestLink,
@@ -97,20 +100,44 @@ module.exports = () => {
     }
 
     function createContract(req, res) {
-        let contract = new Contract(req.body)
-        // let contract = new Contract(req.body)
-        // let id = mongoose.Types.ObjectId('5e9028cb43927d09cc2bf8b2')
-        contract.save((err, data) => {
-            if (err) {
-                res.json(returnError(JSON.stringify(err)))
-            } else {
-                res.json({
-                    message: 'Successful Save',
-                    success: true,
-                    data: data
-                })
-            }
-        })
+
+        if (req.body.address) {
+            Contract.findOne({ address: req.body.address }, (err, data) => {
+                if (err) {
+                    res.json(returnError(JSON.stringify(err)))
+                } else {
+                    data.name = req.body.name
+                    if (req.body.name === 'Incident') {
+                        data.incident = req.body.incident
+                    } else {
+                        data.policy = req.body.policy
+                    }
+
+                    data.save();
+                    res.json({
+                        message: 'Successful Save',
+                        success: true,
+                        data: data
+                    })
+                }
+            })
+        } else {
+            let contract = new Contract(req.body)
+            // let contract = new Contract(req.body)
+            // let id = mongoose.Types.ObjectId('5e9028cb43927d09cc2bf8b2')
+            contract.save((err, data) => {
+                if (err) {
+                    res.json(returnError(JSON.stringify(err)))
+                } else {
+                    res.json({
+                        message: 'Successful Save',
+                        success: true,
+                        data: data
+                    })
+                }
+            })
+        }
+
     }
 
     async function requestLink(req, res) {
@@ -283,6 +310,65 @@ module.exports = () => {
 
     }
 
+    function getIncidentsByParty(req, res) {
+        let address = req.body.address
 
+        Contract.find({ 'incident.involvedParties': { $all: [address] } }, (err, data) => {
+            if (err) {
+                res.json(returnError(JSON.stringify(err)))
+            } else {
+                res.json({
+                    message: 'Successful fetch.',
+                    success: true,
+                    data: data
+                })
+            }
+        })
+    }
+
+    async function getIncident(req, res) {
+        let address = req.body.address
+        let involvedParties = []
+
+        try {
+
+            let contract = await Contract.findOne({ address: address })
+            for (let index = 0; index < contract.incident.involvedParties.length; index++) {
+                let policyAddress = contract.incident.involvedParties[index]
+                let policy = await Contract.findOne({ address: policyAddress })
+                involvedParties.push(policy.policy)
+            }
+
+
+
+            res.json({
+                message: 'Successful fetch.',
+                success: true,
+                data: { contract: contract, involvedParties: involvedParties }
+            })
+        } catch (error) {
+            res.json(returnError(JSON.stringify(error)))
+        }
+
+    }
+
+
+    function getLinkPolicy(req, res) {
+        let linkAddressRequestor = req.body.linkAddressRequestor
+
+        Contract.find({ 'policy.linkPolicy.statusCode': 1, 'policy.linkPolicy.linkAddressRequestor': linkAddressRequestor })
+            .select('policy.linkPolicy')
+            .exec((err, data) => {
+                if (err) {
+                    res.json(returnError(JSON.stringify(err)))
+                } else {
+                    res.json({
+                        message: 'Successful fetch.',
+                        success: true,
+                        data: data
+                    })
+                }
+            })
+    }
 
 }

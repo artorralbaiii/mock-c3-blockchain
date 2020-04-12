@@ -52,7 +52,6 @@ let contractSchema = new schema({
 }, { timestamps: true }, { usePushEach: true })
 
 
-// Encrypt Password
 contractSchema.pre('save', function (next) {
     let contract = this;
     let contractHash;
@@ -126,19 +125,24 @@ contractSchema.pre('save', function (next) {
 
     if (contract.name == 'Incident') {
         for (let index = 0; index < contract.incident.images.length; index++) {
+            if (contract.incident.images[index].link == '') {
+                let base64data = contract.incident.images[index].bytes.replace(/^data:.*,/, '')
 
-            let base64data = contract.incident.images[index].bytes.replace(/^data:.*,/, '')
-
-            writeFile(filePath + contract.incident.images[index].name, base64data, 'base64')
-            contract.incident.images[index].bytes = '';
-            contract.incident.images[index].link = hostLink + 'files/' + contract.address + '/' + contract.incident.images[index].name;
+                writeFile(filePath + contract.incident.images[index].name, base64data, 'base64')
+                contract.incident.images[index].bytes = '';
+                contract.incident.images[index].link = hostLink + 'files/' + contract.address + '/' + contract.incident.images[index].name;
+            }
         }
         for (let index = 0; index < contract.incident.documents.length; index++) {
-            let base64data = contract.incident.documents[index].bytes.replace(/^data:.*,/, '')
 
-            writeFile(filePath + contract.incident.documents[index].name, base64data, 'base64')
-            contract.incident.documents[index].bytes = ''
-            contract.incident.documents[index].link = hostLink + 'files/' + contract.address + '/' + contract.incident.documents[index].name
+            if (contract.incident.documents[index].link == '') {
+                let base64data = contract.incident.documents[index].bytes.replace(/^data:.*,/, '')
+
+                writeFile(filePath + contract.incident.documents[index].name, base64data, 'base64')
+                contract.incident.documents[index].bytes = ''
+                contract.incident.documents[index].link = hostLink + 'files/' + contract.address + '/' + contract.incident.documents[index].name
+            }
+
         }
 
 
