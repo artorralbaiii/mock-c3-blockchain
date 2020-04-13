@@ -16,6 +16,7 @@ module.exports = () => {
         createContract: createContract,
         getAccounts: getAccounts,
         getBlocks: getBlocks,
+        getAllContracts: getAllContracts,
         getContracts: getContracts,
         getContractByAddress: getContractByAddress,
         getCounts: getCounts,
@@ -369,6 +370,122 @@ module.exports = () => {
                     })
                 }
             })
+    }
+
+    async function getAllContracts(req, res) {
+        let contractName = req.body.name
+        let account = req.body.address
+        let policyObjects = []
+        let incidentObjects = []
+
+        Contract.find({ name: 'Policy', owner: account }, (err, data) => {
+            if (err) {
+                res.json(returnError(JSON.stringify(err)))
+            } else {
+
+                if (contractName === 'Policy') {
+                    res.json({
+                        message: 'Successful fetch.',
+                        success: true,
+                        data: data
+                    })
+                } else {
+                    let policyAddresses = []
+
+                    for (let index = 0; index < data.length; index++) {
+                        policyAddresses.push(data[index].address)
+
+                        policyObjects.push({
+                            orgDocumentId: data[index].policy.orgDocumentId,
+                            policyAddress: data[index].address
+                        })
+
+                        // incidentObjects.push({
+                        //     orgDocumentId: data[index].policy.orgDocumentId,
+                        //     policyAddress: data[index].address,
+                        //     incidentAddress: null,
+                        //     dateOfAccident: null,
+                        //     timeOfAccident: null,
+                        //     location: null
+                        // })
+
+                    }
+
+
+
+
+                    Contract.find({ name: contractName, 'incident.involvedParties': { $all: policyAddresses } }, (err, incidentData) => {
+                        if (err) {
+                            res.json(returnError(JSON.stringify(err)))
+                        } else {
+
+                            // for (let index = 0; index < policyObjects.length; index++) {
+                            //     let obj = incidentData.find(obj => obj.incident.involvedParties.indexOf(policyObjects[index].policyAddress) != -1);
+                            //     if (obj) {
+                            //         // incidentObjects[index].incidentAddress = obj.address
+                            //         // incidentObjects[index].dateOfAccident = obj.incident.dateOfAccident
+                            //         // incidentObjects[index].timeOfAccident = obj.incident.timeOfAccident
+                            //         // incidentObjects[index].location = obj.incident.location
+
+                            //         incidentObjects.push({
+                            //             orgDocumentId: policyObjects[index].orgDocumentId,
+                            //             policyAddress: policyObjects[index].policyAddress,
+                            //             incidentAddress: obj.address,
+                            //             dateOfAccident: obj.incident.dateOfAccident,
+                            //             timeOfAccident: obj.incident.timeOfAccident,
+                            //             location: obj.incident.location
+                            //         })
+
+                            //     }
+                            // }
+
+                            for (let index = 0; index < incidentData.length; index++) {
+
+
+
+                                // let policyData = incidentData.find(obj => obj.incident.involvedParties.indexOf(policyObjects[index].policyAddress) != -1);
+
+                                // incidentData[index].incident.involvedParties
+                                let policyData = {}
+
+                                for (let indexY = 0; indexY < policyObjects.length; indexY++) {
+                                    let dataIndex = incidentData[index].incident.involvedParties.indexOf(policyObjects[indexY].policyAddress)
+                                    if (dataIndex != -1) {
+                                        policyData = policyObjects[indexY]
+                                        break
+                                    }
+
+                                    // let policyData = incidentData.find(obj => obj.incident.involvedParties.indexOf(policyObjects[index].policyAddress) != -1);
+
+
+                                }
+
+                                incidentObjects.push({
+                                    orgDocumentId: policyData.orgDocumentId,
+                                    policyAddress: policyData.policyAddress,
+                                    incidentAddress: incidentData[index].address,
+                                    dateOfAccident: incidentData[index].incident.dateOfAccident,
+                                    timeOfAccident: incidentData[index].incident.timeOfAccident,
+                                    location: incidentData[index].incident.location
+                                })
+
+                            }
+
+                            res.json({
+                                message: 'Successful fetch.',
+                                success: true,
+                                data: incidentObjects
+                            })
+
+                        }
+                    })
+
+                }
+
+            }
+        })
+
+
     }
 
 }

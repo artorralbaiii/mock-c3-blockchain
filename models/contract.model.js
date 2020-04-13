@@ -37,6 +37,7 @@ let contractSchema = new schema({
         termTo: { type: String },
         itemInsured: { type: String },
         provider: { type: String },
+        orgDocumentId: { type: String },
         status: { type: String, default: 'Active' },
         effectivityDate: { type: Date },
         linkPolicy: [{
