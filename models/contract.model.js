@@ -26,6 +26,7 @@ let contractSchema = new schema({
         images: [{ type: Object }],
         documents: [{ type: Object }],
         descriptionOfLoss: [{ type: Object }],
+        auditTrail: [{ type: Object }],
         involvedParties: [{ type: String }]
     },
     policy: {

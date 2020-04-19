@@ -8,11 +8,15 @@ let cfenv = require('cfenv')
 let express = require('express')
 let cors = require('cors')
 let mongoose = require('mongoose')
+let config = require('./app.config')()
 
 // Mongo DB Connection 
 // mongoose.connect('mongodb://admin:passw0rd@ds061681.mlab.com:61681/fnoldb',
 //     {}, (err) => (err) ? console.log(err) : console.log('Connected to database...'))
-mongoose.connect('mongodb+srv://admin:passw0rd@cluster0-vzlo8.mongodb.net/c3-mock-blockchain',
+// mongoose.connect('mongodb+srv://admin:passw0rd@cluster0-vzlo8.mongodb.net/c3-mock-blockchain',
+//     {}, (err) => (err) ? console.log(err) : console.log('Connected to database...'))
+let mongoConnectionString = process.env.MONGO_DB || config.env.MONGO_DB
+mongoose.connect(mongoConnectionString,
     {}, (err) => (err) ? console.log(err) : console.log('Connected to database...'))
 
 // express server
@@ -49,7 +53,7 @@ let appEnv = cfenv.getAppEnv();
 
 // start server on the specified port and binding host
 // app.listen(appEnv.port, '0.0.0.0', () => {
-app.listen(6004, '0.0.0.0', () => {
+app.listen(config.env.PORT, '0.0.0.0', () => {
     // print a message when the server starts listening
-    console.log("server starting on " + appEnv.url)
+    console.log("server starting on " + config.env.PORT)
 })

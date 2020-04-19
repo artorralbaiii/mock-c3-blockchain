@@ -124,8 +124,7 @@ module.exports = () => {
             })
         } else {
             let contract = new Contract(req.body)
-            // let contract = new Contract(req.body)
-            // let id = mongoose.Types.ObjectId('5e9028cb43927d09cc2bf8b2')
+            
             contract.save((err, data) => {
                 if (err) {
                     res.json(returnError(JSON.stringify(err)))
@@ -172,7 +171,6 @@ module.exports = () => {
 
         }
 
-        // , effectivityDate: { $gte: new Date("2013-10-01T00:00:00.000Z") }
 
         if (!otherContract) {
             res.json({
@@ -234,7 +232,6 @@ module.exports = () => {
 
     function approveLink(req, res) {
         let myAddress = req.body.myAddress
-        // let linkId = mongoose.Types.ObjectId(req.body.linkId)
         let linkId = req.body.linkId
         let returnData = {}
 
@@ -399,53 +396,15 @@ module.exports = () => {
                             orgDocumentId: data[index].policy.orgDocumentId,
                             policyAddress: data[index].address
                         })
-
-                        // incidentObjects.push({
-                        //     orgDocumentId: data[index].policy.orgDocumentId,
-                        //     policyAddress: data[index].address,
-                        //     incidentAddress: null,
-                        //     dateOfAccident: null,
-                        //     timeOfAccident: null,
-                        //     location: null
-                        // })
-
                     }
-
-
-
 
                     Contract.find({ name: contractName, 'incident.involvedParties': { $all: policyAddresses } }, (err, incidentData) => {
                         if (err) {
                             res.json(returnError(JSON.stringify(err)))
                         } else {
 
-                            // for (let index = 0; index < policyObjects.length; index++) {
-                            //     let obj = incidentData.find(obj => obj.incident.involvedParties.indexOf(policyObjects[index].policyAddress) != -1);
-                            //     if (obj) {
-                            //         // incidentObjects[index].incidentAddress = obj.address
-                            //         // incidentObjects[index].dateOfAccident = obj.incident.dateOfAccident
-                            //         // incidentObjects[index].timeOfAccident = obj.incident.timeOfAccident
-                            //         // incidentObjects[index].location = obj.incident.location
-
-                            //         incidentObjects.push({
-                            //             orgDocumentId: policyObjects[index].orgDocumentId,
-                            //             policyAddress: policyObjects[index].policyAddress,
-                            //             incidentAddress: obj.address,
-                            //             dateOfAccident: obj.incident.dateOfAccident,
-                            //             timeOfAccident: obj.incident.timeOfAccident,
-                            //             location: obj.incident.location
-                            //         })
-
-                            //     }
-                            // }
-
                             for (let index = 0; index < incidentData.length; index++) {
 
-
-
-                                // let policyData = incidentData.find(obj => obj.incident.involvedParties.indexOf(policyObjects[index].policyAddress) != -1);
-
-                                // incidentData[index].incident.involvedParties
                                 let policyData = {}
 
                                 for (let indexY = 0; indexY < policyObjects.length; indexY++) {
@@ -454,8 +413,6 @@ module.exports = () => {
                                         policyData = policyObjects[indexY]
                                         break
                                     }
-
-                                    // let policyData = incidentData.find(obj => obj.incident.involvedParties.indexOf(policyObjects[index].policyAddress) != -1);
 
 
                                 }
@@ -478,6 +435,8 @@ module.exports = () => {
                             })
 
                         }
+
+
                     })
 
                 }
